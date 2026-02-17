@@ -2,8 +2,6 @@
 
 A production-ready collaborative diagram editor similar to Eraser.io, built with React, ASP.NET Core, and Yjs CRDTs for real-time synchronization.
 
-![MicroEraser](https://via.placeholder.com/800x400?text=MicroEraser+Collaborative+Editor)
-
 ## Features
 
 - **Real-time Collaboration**: Multiple users can edit the same canvas simultaneously with live sync
