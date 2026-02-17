@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:14
+    container_name: microeraser-db
+    environment:
+      POSTGRES_DB: microeraser
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Seq - Log Aggregation and Visualization
+  # UI at http://localhost:5341
+  # Ingestion API at http://localhost:5341 (same port)
+  seq:
+    image: datalust/seq:latest
+    container_name: microeraser-seq
+    environment:
+      ACCEPT_EULA: Y
+      # For production, set a proper API key
+      # SEQ_FIRSTRUN_ADMINPASSWORDHASH: <hashed password>
+    ports:
+      - "5341:80"      # UI and Ingestion API
+    volumes:
+      - seq_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/api"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+  seq_data:
+
+# Usage:
+# docker-compose up -d           # Start all services
+# docker-compose up -d postgres  # Start only PostgreSQL
+# docker-compose up -d seq       # Start only Seq
+# docker-compose down            # Stop all services
+# docker-compose logs -f seq     # View Seq logs
